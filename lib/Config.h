@@ -4,9 +4,11 @@
 #include <string>
 
 struct Config {
-        std::size_t length;
-        std::string InputFileName;
-        std::string OutputFileName;
+        size_t maxMemoryCapacity;
+        size_t length;
+        std::string inputFileName;
+        std::string outputFileName;
+        std::string tempDirectoryPath;
         std::chrono::milliseconds readDataDelay;
         std::chrono::milliseconds writeDataDelay;
         std::chrono::milliseconds moveTapeDelay;

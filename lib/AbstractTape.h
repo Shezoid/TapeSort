@@ -15,5 +15,9 @@ public:
 
     virtual void previous() = 0;
 
-    virtual std::size_t getLength() = 0;
+    virtual std::size_t getLength()= 0;
+
+    virtual bool hasNext() = 0;
+
+    virtual bool hasPrevious() = 0;
 };
