@@ -8,14 +8,14 @@
 TEST(FileTapeTesting, SimpleTapeTest) {
     // Arrange
     std::filesystem::path testPath =
-        std::filesystem::path(PROJECT_ROOT) / "tmp" / "SimpleTapeTest";
+            std::filesystem::path(PROJECT_ROOT) / "tmp" / "SimpleTapeTest";
     const std::vector<int32_t> expected = {1, 2, 3, 4, 5, 6, 7, 8};
-    AbstractTape<int32_t> *tape = new FileTape<int32_t>(
-        testPath,
-        std::chrono::milliseconds(0),
-        std::chrono::milliseconds(0),
-        std::chrono::milliseconds(0)
-    );
+    std::shared_ptr<AbstractTape<int32_t> > tape
+            = std::make_shared<FileTape<int32_t> >(testPath,
+                                                   std::chrono::milliseconds(0),
+                                                   std::chrono::milliseconds(0),
+                                                   std::chrono::milliseconds(0)
+            );
 
     // Act
     for (int32_t i = 1; i < expected.size() + 1; ++i) {
@@ -32,7 +32,6 @@ TEST(FileTapeTesting, SimpleTapeTest) {
         tape->next();
     }
 
-    delete tape;
     std::filesystem::remove(testPath);
 }
 
@@ -40,15 +39,14 @@ TEST(FileTapeTesting, SimpleTapeTest) {
 TEST(FileTapeTesting, TapeTestWithOverridingData) {
     // Arrange
     std::filesystem::path testPath =
-        std::filesystem::path(PROJECT_ROOT) / "tmp" / "SimpleTapeTest";
+            std::filesystem::path(PROJECT_ROOT) / "tmp" / "SimpleTapeTest";
 
     const std::vector<int32_t> expected = {5, 6, 7, 8};
-    AbstractTape<int32_t> *tape = new FileTape<int32_t>(
-        testPath,
-        std::chrono::milliseconds(0),
-        std::chrono::milliseconds(0),
-        std::chrono::milliseconds(0)
-    );
+    std::shared_ptr<AbstractTape<int32_t> > tape
+            = std::make_shared<FileTape<int32_t> >(testPath,
+                                                   std::chrono::milliseconds(0),
+                                                   std::chrono::milliseconds(0),
+                                                   std::chrono::milliseconds(0));
 
     // Act
     for (int32_t i = 1; i < 9; ++i) {
@@ -70,6 +68,5 @@ TEST(FileTapeTesting, TapeTestWithOverridingData) {
         tape->next();
     }
 
-    delete tape;
     std::filesystem::remove(testPath);
 }
