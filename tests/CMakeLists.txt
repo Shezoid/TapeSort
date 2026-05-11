@@ -13,8 +13,9 @@ enable_testing()
 
 add_executable(
         tape-sort-lib-tests
-        SimpleTest.cpp
+        SorterTests.cpp
         ../lib/FileTapeFactory.h
+        FileTapeTests.cpp
 )
 
 target_link_libraries(
@@ -22,6 +23,8 @@ target_link_libraries(
         GTest::gtest_main
         GTest::gmock_main
 )
+
+target_compile_definitions(tape-sort-lib-tests PRIVATE PROJECT_ROOT="${CMAKE_SOURCE_DIR}")
 
 target_include_directories(tape-sort-lib-tests PUBLIC ${PROJECT_SOURCE_DIR})
 
