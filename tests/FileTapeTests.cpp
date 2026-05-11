@@ -39,7 +39,7 @@ TEST(FileTapeTesting, SimpleTapeTest) {
 TEST(FileTapeTesting, TapeTestWithOverridingData) {
     // Arrange
     std::filesystem::path testPath =
-            std::filesystem::path(PROJECT_ROOT) / "tmp" / "SimpleTapeTest";
+            std::filesystem::path(PROJECT_ROOT) / "tmp" / "SimpleTapeWithOverridingDataTest";
 
     const std::vector<int32_t> expected = {5, 6, 7, 8};
     std::shared_ptr<AbstractTape<int32_t> > tape
