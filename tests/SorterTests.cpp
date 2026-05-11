@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include "InMemoryTapeAdapterFactory.h"
+#include "../lib/tapes/factories/InMemoryTapeAdapterFactory.h"
 #include "TapeSorter.h"
 
 

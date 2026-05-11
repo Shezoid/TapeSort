@@ -1,6 +1,6 @@
 #pragma once
 #include "AbstractTapeFactory.h"
-#include "InMemoryTapeAdapter.h"
+#include "../InMemoryTapeAdapter.h"
 
 template<std::integral T>
 class InMemoryTapeAdapterFactory : public AbstractTapeFactory<T> {

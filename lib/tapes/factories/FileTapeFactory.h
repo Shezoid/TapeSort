@@ -2,8 +2,8 @@
 #include <concepts>
 #include <utility>
 
-#include "Config.h"
-#include "FileTape.h"
+#include "../../configs/Config.h"
+#include "../FileTape.h"
 #include "AbstractTapeFactory.h"
 
 

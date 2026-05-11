@@ -1,5 +1,5 @@
 #pragma once
-#include "ConfigBuilderHandlers.h"
+#include "../ConfigHandler.h"
 
 
 class AbstractBuilderHandlersFactory {

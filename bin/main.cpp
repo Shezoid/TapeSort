@@ -1,13 +1,13 @@
 #include <filesystem>
-#include <FileTape.h>
-#include <EnvParser.h>
+#include <../lib/tapes/FileTape.h>
 
-#include "AbstractBuilderHandlersFactory.h"
-#include "AbstractTapeFactory.h"
-#include "Config.h"
-#include "ConfigBuilderHandlersFactory.h"
-#include "FileTapeFactory.h"
+#include "../lib/configs/handlers/Factories/AbstractBuilderHandlersFactory.h"
+#include "../lib/tapes/factories/AbstractTapeFactory.h"
+#include "../lib/configs/Config.h"
+#include "../lib/tapes/factories/FileTapeFactory.h"
 #include "TapeSorter.h"
+#include "configs/EnvParser.h"
+#include "configs/handlers/Factories/ConfigBuilderHandlersFactory.h"
 
 
 bool inputIsBinary(int argc, char *argv[]) {

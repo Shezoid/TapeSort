@@ -2,8 +2,8 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include "AbstractTape.h"
-#include "FileTape.h"
+#include "../lib/tapes/AbstractTape.h"
+#include "../lib/tapes/FileTape.h"
 
 TEST(FileTapeTesting, SimpleTapeTest) {
     // Arrange

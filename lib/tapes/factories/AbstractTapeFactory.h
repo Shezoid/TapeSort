@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "AbstractTape.h"
+#include "../AbstractTape.h"
 #include "concepts"
 
 template<std::integral T>

@@ -14,7 +14,7 @@ enable_testing()
 add_executable(
         tape-sort-lib-tests
         SorterTests.cpp
-        ../lib/FileTapeFactory.h
+        ../lib/tapes/factories/FileTapeFactory.h
         FileTapeTests.cpp
 )
 
