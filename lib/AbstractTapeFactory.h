@@ -7,7 +7,7 @@
 template<std::integral T>
 class AbstractTapeFactory {
 public:
-    virtual AbstractTape<T>& create() = 0;
+    virtual std::shared_ptr<AbstractTape<T>> create() = 0;
 
-    virtual ~AbstractTapeFactory();
+    virtual ~AbstractTapeFactory() = default;
 };
