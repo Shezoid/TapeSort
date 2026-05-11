@@ -9,9 +9,9 @@
 template<std::integral T>
 class TapeSorter {
 public:
-    TapeSorter(AbstractTape<T> inputTape,
-               AbstractTape<T> outputTape,
-               AbstractTapeFactory<T> factory,
+    TapeSorter(std::shared_ptr<AbstractTape<T> > inputTape,
+               std::shared_ptr<AbstractTape<T> > outputTape,
+               std::shared_ptr<AbstractTapeFactory<T> > factory,
                const size_t maxMemoryCapacity) {
         this->inputTape = inputTape;
         this->outputTape = outputTape;
@@ -20,7 +20,7 @@ public:
     }
 
     void sort() {
-        std::vector<AbstractTape<T> > tapes
+        std::vector<std::shared_ptr<AbstractTape<T>> > tapes
                 = std::move(getTapes());
 
         auto comparator = [](const HeapNode &t1, const HeapNode &t2) {
@@ -29,60 +29,84 @@ public:
             }
             return t1.tapeIndex > t2.tapeIndex;
         };
-        std::priority_queue<HeapNode, std::vector<HeapNode>, decltype(comparator) > heap;
+        std::priority_queue<HeapNode, std::vector<HeapNode>, decltype(comparator)> heap;
         for (std::size_t i = 0; i < tapes.size(); ++i) {
-            heap.push(std::move({tapes[i].read, i}));
+            HeapNode heapNode(tapes[i]->read(), i);
+
+            heap.push(heapNode);
         }
 
-        for (std::size_t i = 0; i < inputTape.getLength(); ++i) {
+        for (std::size_t i = 0; i < inputTape->getLength(); ++i) {
             HeapNode heapNode = heap.top();
             heap.pop();
-            outputTape.write(heapNode.value);
-
-            if (tapes[heapNode.tapeIndex].hasPrevious()) {
-                tapes[heapNode.tapeIndex].previous();
-                heapNode = {tapes[heapNode.tapeIndex].read(), heapNode.tapeIndex};
+            outputTape->write(heapNode.value);
+            outputTape->next();
+            if (tapes[heapNode.tapeIndex]->hasPrevious()) {
+                tapes[heapNode.tapeIndex]->previous();
+                heapNode = {tapes[heapNode.tapeIndex]->read(), heapNode.tapeIndex};
                 heap.push(std::move(heapNode));
             }
         }
-
     }
 
 
-    std::vector<AbstractTape<T> > getTapes() {
-        std::vector<AbstractTape<T> > tapes;
+    std::vector<std::shared_ptr<AbstractTape<T>> > getTapes() {
+        std::vector<std::shared_ptr<AbstractTape<T>> > tapes;
         std::vector<T> elements(maxCapacity);
 
-        size_t i = 0;
+        std::size_t i = 0;
+        std::size_t length = 0;
 
-        while (inputTape.hasNext()) {
+        while (inputTape->hasNext()) {
             if (i >= maxCapacity) {
-                AbstractTape<T> tape = factory.create();
+                std::shared_ptr<AbstractTape<T>> tape = factory->create();
+
                 std::stable_sort(elements.begin(), elements.end());
+
                 auto begin = elements.rbegin();
                 while (begin != elements.rend()) {
-                    tape.write(*begin);
-                    tape.next();
+                    tape->write(*begin);
+                    tape->next();
                     ++begin;
                 }
-                tapes.push_back(std::move(tape));
-                elements.clear();
+                tape->previous();
+                tapes.push_back(tape);
+                length = 0;
+                i = 0;
             }
-            elements[i] = inputTape.read();
-            inputTape.next();
+            elements[i] = inputTape->read();
+            inputTape->next();
             ++i;
+            ++length;
+        }
+
+        if (!elements.empty()) {
+            std::shared_ptr<AbstractTape<T>> tape = factory->create();
+            auto end = elements.begin() + length;
+
+            std::stable_sort(elements.begin(), end);
+
+            for (int i = length - 1; i >= 0; --i) {
+                tape->write(elements[i]);
+                tape->next();
+            }
+            tape->previous();
+            tapes.push_back(tape);
         }
 
         return tapes;
     }
 
 private:
-    AbstractTape<T> inputTape;
-    AbstractTape<T> outputTape;
-    AbstractTapeFactory<T> factory;
+    std::shared_ptr<AbstractTape<T> > inputTape;
+    std::shared_ptr<AbstractTape<T> > outputTape;
+    std::shared_ptr<AbstractTapeFactory<T> > factory;
     size_t maxCapacity;
 
     struct HeapNode {
+        HeapNode(T value, const std::size_t tapeIndex) : value(value), tapeIndex(tapeIndex) {
+        }
+
         T value;
         std::size_t tapeIndex;
     };

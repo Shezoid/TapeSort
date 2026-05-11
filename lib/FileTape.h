@@ -3,7 +3,7 @@
 #include "AbstractTape.h"
 #include <fstream>
 #include <concepts>
-
+#include <iostream>
 #include <chrono>
 
 template<std::integral T>
@@ -15,20 +15,49 @@ public:
              const std::chrono::milliseconds moveTapeDelay)
         : readDataDelay(readDataDelay),
           writeDataDelay(writeDataDelay),
-          moveTapeDelay(moveTapeDelay) {
-
+          moveTapeDelay(moveTapeDelay),
+          filePath(fileName) {
+        isTempTape = false;
         file = std::fstream(fileName, std::ios::binary | std::ios::in | std::ios::out);
-        if (!file.is_open()) {
+        if (file.is_open()) {
+            file.read(reinterpret_cast<char *>(&length), sizeof(std::size_t));
+            file.seekg(std::ios::beg);
+        } else {
             file = std::fstream(fileName, std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
+            length = 0;
             if (!file.is_open()) {
                 std::cerr << "Error opening file " << fileName << std::endl;
             }
         }
     }
 
+    FileTape(const std::string &fileName,
+             const std::chrono::milliseconds readDataDelay,
+             const std::chrono::milliseconds writeDataDelay,
+             const std::chrono::milliseconds moveTapeDelay,
+             bool isTempTape) : FileTape(
+        fileName,
+        readDataDelay,
+        writeDataDelay,
+        moveTapeDelay) {
+        this->isTempTape = isTempTape;
+    }
+
+    void convertFromStream(std::istream& stream) override {
+        T value;
+        while (stream >> value) {
+            write(value);
+            std::cout << read() << " :From stream" << std::endl;
+            next();
+        }
+        while (hasPrevious()) {
+            previous();
+        }
+    }
+
     T read() override {
         T value;
-        file.seekg(current * sizeof(T));
+        file.seekg(sizeof(std::size_t) + current * sizeof(T));
         file.read(
             reinterpret_cast<char *>(&value),
             sizeof(T)
@@ -37,7 +66,7 @@ public:
     }
 
     void write(T value) override {
-        file.seekp(current * sizeof(T));
+        file.seekp(sizeof(std::size_t) + current * sizeof(T));
         file.write(
             reinterpret_cast<char *>(&value),
             sizeof(T)
@@ -49,11 +78,13 @@ public:
 
         if (current >= length) {
             length = current + 1;
+            file.seekp(std::fstream::beg);
+            file.write(reinterpret_cast<char *>(&length), sizeof(std::size_t));
         }
     }
 
     void next() override {
-        if (length < current) {
+        if (length > current) {
             ++current;
         }
     }
@@ -78,9 +109,14 @@ public:
 
     ~FileTape() override {
         file.close();
+        if (isTempTape) {
+            std::filesystem::remove(filePath);
+        }
     }
 
 private:
+    bool isTempTape;
+    std::string filePath;
     std::fstream file;
     std::size_t length = 0;
     std::size_t current = 0;

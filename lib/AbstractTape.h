@@ -7,6 +7,8 @@ class AbstractTape {
 public:
     virtual ~AbstractTape() = default;
 
+    virtual void convertFromStream(std::istream& stream) = 0;
+
     virtual T read() = 0;
 
     virtual void write(T value) = 0;
