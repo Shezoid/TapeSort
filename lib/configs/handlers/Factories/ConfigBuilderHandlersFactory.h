@@ -30,10 +30,10 @@ public:
 
 
         std::unique_ptr<Handler> maxMemoryCapacityHandler = std::make_unique<ConfigHandler<std::size_t>>("maxMemoryCapacity", maxMemorySetter);
-        Handler *tempDirectoryHandler = new ConfigHandler("tempDirectory", tempDirectorySetter);
-        Handler *readDataHandler = new ConfigHandler("readData", readDelaySetter);
-        Handler *writeDataHandler = new ConfigHandler("writeData", writeDelaySetter);
-        Handler *moveDataHandler = new ConfigHandler("moveData", moveDelaySetter);
+        Handler *tempDirectoryHandler = new ConfigHandler("tempDirectoryPath", tempDirectorySetter);
+        Handler *readDataHandler = new ConfigHandler("readDataDelay", readDelaySetter);
+        Handler *writeDataHandler = new ConfigHandler("writeDataDelay", writeDelaySetter);
+        Handler *moveDataHandler = new ConfigHandler("moveTapeDelay", moveDelaySetter);
 
         maxMemoryCapacityHandler->
         setNext(tempDirectoryHandler)->

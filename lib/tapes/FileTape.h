@@ -5,6 +5,7 @@
 #include <concepts>
 #include <iostream>
 #include <chrono>
+#include <thread>
 
 template<std::integral T>
 class FileTape : public AbstractTape<T> {
@@ -55,6 +56,7 @@ public:
     }
 
     T read() override {
+        std::this_thread::sleep_for(readDataDelay);
         T value;
         file.seekg(sizeof(std::size_t) + current * sizeof(T));
         file.read(
@@ -65,6 +67,7 @@ public:
     }
 
     void write(T value) override {
+        std::this_thread::sleep_for(writeDataDelay);
         file.seekp(sizeof(std::size_t) + current * sizeof(T));
         file.write(
             reinterpret_cast<char *>(&value),
@@ -83,12 +86,14 @@ public:
     }
 
     void next() override {
+        std::this_thread::sleep_for(moveTapeDelay);
         if (length > current) {
             ++current;
         }
     }
 
     void previous() override {
+        std::this_thread::sleep_for(moveTapeDelay);
         if (current > 0) {
             --current;
         }

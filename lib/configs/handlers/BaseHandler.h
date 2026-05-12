@@ -22,6 +22,6 @@ public:
         return this;
     }
 
-private:
-    Handler *next = 0;
+protected:
+    Handler *next = nullptr;
 };

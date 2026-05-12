@@ -19,11 +19,14 @@ public:
         this->function = function;
     }
 
-    Config::Builder handle(
+    Config::Builder& handle(
         std::unordered_map<std::string, std::string> &configs,
-        Config::Builder builder) override {
+        Config::Builder& builder) override {
         T value(configs[key]);
         function(builder, value);
+        if (next != nullptr) {
+            return next->handle(configs,builder);
+        }
         return builder;
     }
 
@@ -42,11 +45,14 @@ public:
         this->function = function;
     }
 
-    Config::Builder handle(
+    Config::Builder& handle(
         std::unordered_map<std::string, std::string> &configs,
-        Config::Builder builder) override {
+        Config::Builder& builder) override {
         T value = std::stoll(configs[key]);
         function(builder, value);
+        if (next != nullptr) {
+            return next->handle(configs,builder);
+        }
         return builder;
     }
 
@@ -65,11 +71,14 @@ public:
         this->function = std::move(function);
     }
 
-    Config::Builder handle(
+    Config::Builder& handle(
         std::unordered_map<std::string, std::string> &configs,
-        Config::Builder builder) override {
+        Config::Builder& builder) override {
         std::chrono::milliseconds value(std::stoll(configs[key]));
         function(builder, value);
+        if (next != nullptr) {
+            return next->handle(configs, builder);
+        }
         return builder;
     }
 
