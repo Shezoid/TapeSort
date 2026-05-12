@@ -58,12 +58,12 @@ struct Config {
         }
 
         Config build() {
-            return Config(
+            return {
                 maxMemoryCapacity,
                 tempDirectoryPath,
                 readDataDelay,
                 writeDataDelay,
-                moveTapeDelay);
+                moveTapeDelay};
         }
 
     private:

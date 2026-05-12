@@ -1,10 +1,11 @@
+#pragma once
 #include <fstream>
 #include <string>
 #include <unordered_map>
 
 class EnvParser {
 public:
-    std::unordered_map<std::string, std::string >& parse(std::string configPath) {
+    const std::unordered_map<std::string, std::string >& parse(const std::string& configPath) {
         std::ifstream file(configPath);
         if (!file.is_open()) {
             throw std::invalid_argument("Invalid configuration file path");
