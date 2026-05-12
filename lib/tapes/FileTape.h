@@ -18,17 +18,21 @@ public:
           writeDataDelay(writeDataDelay),
           moveTapeDelay(moveTapeDelay),
           filePath(fileName) {
+
         isTempTape = false;
         file = std::fstream(fileName, std::ios::binary | std::ios::in | std::ios::out);
         if (file.is_open()) {
             file.read(reinterpret_cast<char *>(&length), sizeof(std::size_t));
-            file.seekg(std::ios::beg);
+            file.seekg(0, std::ios::beg);
         } else {
             file = std::fstream(fileName, std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
             length = 0;
             if (!file.is_open()) {
                 std::cerr << "Error opening file " << fileName << std::endl;
             }
+            file.seekp(0, std::fstream::beg);
+            file.write(reinterpret_cast<char *>(&length), sizeof(std::size_t));
+            file.flush();
         }
     }
 
@@ -58,7 +62,13 @@ public:
     T read() override {
         std::this_thread::sleep_for(readDataDelay);
         T value;
-        file.seekg(sizeof(std::size_t) + current * sizeof(T));
+
+        if (current >= length) {
+            file.seekg(sizeof(std::size_t) + (current - 1) * sizeof(T));
+        } else {
+            file.seekg(sizeof(std::size_t) + current * sizeof(T));
+        }
+
         file.read(
             reinterpret_cast<char *>(&value),
             sizeof(T)
@@ -73,6 +83,7 @@ public:
             reinterpret_cast<char *>(&value),
             sizeof(T)
         );
+        file.flush();
 
         if (!file) {
             std::cerr << "Error writing at index " << current << std::endl;
@@ -80,8 +91,9 @@ public:
 
         if (current >= length) {
             length = current + 1;
-            file.seekp(std::fstream::beg);
+            file.seekp(0, std::fstream::beg);
             file.write(reinterpret_cast<char *>(&length), sizeof(std::size_t));
+            file.flush();
         }
     }
 

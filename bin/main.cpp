@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
             config.readDataDelay,
             config.writeDataDelay,
             config.moveTapeDelay);
-        std::fstream file(filePath, std::ios::in);
+        std::fstream file(std::string(argv[1]), std::ios::in);
         if (!file.is_open()) throw std::runtime_error("failed to open input file");
         input->convertFromStream(file);
     }
@@ -70,7 +70,6 @@ int main(int argc, char *argv[]) {
     output.reset();
     input.reset();
     tapeFactory.reset();
-
 
 
     // reader for result tape

@@ -34,7 +34,8 @@ public:
             heap.push(heapNode);
         }
 
-        for (std::size_t i = 0; i < inputTape->getLength(); ++i) {
+        std::size_t length = inputTape->getLength();
+        for (std::size_t i = 0; i < length; ++i) {
             HeapNode heapNode = heap.top();
             heap.pop();
             outputTape->write(heapNode.value);
