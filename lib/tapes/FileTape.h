@@ -47,7 +47,6 @@ public:
         T value;
         while (stream >> value) {
             write(value);
-            std::cout << read() << " :From stream" << std::endl;
             next();
         }
         while (hasPrevious()) {

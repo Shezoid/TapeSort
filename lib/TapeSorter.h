@@ -59,7 +59,8 @@ public:
             if (i >= maxCapacity) {
                 std::shared_ptr<AbstractTape<T>> tape = factory->create();
 
-                std::stable_sort(elements.begin(), elements.end());
+                decomp(0, maxCapacity, elements);
+                // std::stable_sort(elements.begin(), elements.end());
 
                 auto begin = elements.rbegin();
                 while (begin != elements.rend()) {
@@ -100,6 +101,51 @@ private:
     std::shared_ptr<AbstractTape<T> > outputTape;
     std::shared_ptr<AbstractTapeFactory<T> > factory;
     size_t maxCapacity;
+
+
+    
+    void merge(std::vector<T>& arr, std::size_t left, std::size_t mid, std::size_t right) {
+        std::size_t leftIterator = 0;
+        std::size_t rightIterator = 0;
+        std::vector<T> res(right - left);
+
+
+        while (((left + leftIterator) < mid) && ((mid + rightIterator) < right)) {
+            if (arr[left + leftIterator] < arr[mid + rightIterator]) {
+                res[leftIterator + rightIterator] = arr[left + leftIterator];
+                leftIterator++;
+            }
+            else {
+                res[leftIterator + rightIterator] = arr[mid + rightIterator];
+                rightIterator++;
+            }
+        }
+        while ((left + leftIterator) < mid) {
+            res[leftIterator + rightIterator] = arr[left + leftIterator];
+            leftIterator++;
+        }
+
+        while ((mid + rightIterator) < right) {
+            res[leftIterator + rightIterator] = arr[mid + rightIterator];
+            rightIterator++;
+        }
+        for (int i = 0; i < (leftIterator + rightIterator); i++) {
+            arr[left + i] = res[i];
+        }
+    }
+
+
+    void mergeSort(std::size_t left, std::size_t right, std::vector<T>& arr) {
+        if (left + 1 >= right) {
+            return;
+        }
+
+        std::size_t mid = (left + right) / 2;
+        mergeSort(left, mid, arr);
+        mergeSort(mid, right, arr);
+        merge(arr, left, mid, right);
+    }
+
 
     struct HeapNode {
         HeapNode(T value, const std::size_t tapeIndex) : value(value), tapeIndex(tapeIndex) {
