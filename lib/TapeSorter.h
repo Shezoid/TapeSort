@@ -84,7 +84,8 @@ public:
             std::shared_ptr<AbstractTape<T>> tape = factory->create();
             auto end = elements.begin() + length;
 
-            std::stable_sort(elements.begin(), end);
+            mergeSort(0, length, elements);
+            // std::stable_sort(elements.begin(), end);
 
             for (int i = length - 1; i >= 0; --i) {
                 tape->write(elements[i]);
