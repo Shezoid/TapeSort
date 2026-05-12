@@ -59,7 +59,7 @@ public:
             if (i >= maxCapacity) {
                 std::shared_ptr<AbstractTape<T>> tape = factory->create();
 
-                decomp(0, maxCapacity, elements);
+                mergeSort(0, maxCapacity, elements);
                 // std::stable_sort(elements.begin(), elements.end());
 
                 auto begin = elements.rbegin();
