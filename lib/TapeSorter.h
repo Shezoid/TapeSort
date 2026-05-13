@@ -15,7 +15,7 @@ public:
         this->outputTape = outputTape;
         this->factory = factory;
         maxCapacity = maxMemoryCapacity / sizeof(T);
-        temp.tempize(maxCapacity / 2);
+        temp.resize(maxCapacity / 2);
     }
 
     void sort() {
@@ -58,10 +58,10 @@ public:
         std::size_t length = 0;
 
         while (inputTape->hasNext()) {
-            if (i >= maxCapacity) {
+            if (i >= maxCapacity / 2) {
                 std::shared_ptr<AbstractTape<T>> tape = factory->create();
 
-                mergeSort(0, maxCapacity, elements);
+                mergeSort(0, maxCapacity / 2, elements);
                 // std::stable_sort(elements.begin(), elements.end());
 
                 auto begin = elements.rbegin();
