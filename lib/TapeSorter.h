@@ -15,6 +15,7 @@ public:
         this->outputTape = outputTape;
         this->factory = factory;
         maxCapacity = maxMemoryCapacity / sizeof(T);
+        temp.tempize(maxCapacity / 2);
     }
 
     void sort() {
@@ -51,7 +52,7 @@ public:
 
     std::vector<std::shared_ptr<AbstractTape<T>> > getTapes() {
         std::vector<std::shared_ptr<AbstractTape<T>> > tapes;
-        std::vector<T> elements(maxCapacity);
+        std::vector<T> elements(maxCapacity / 2);
 
         std::size_t i = 0;
         std::size_t length = 0;
@@ -103,36 +104,34 @@ private:
     std::shared_ptr<AbstractTape<T> > outputTape;
     std::shared_ptr<AbstractTapeFactory<T> > factory;
     size_t maxCapacity;
-
+    std::vector<T> temp;
 
     
-    void merge(std::vector<T>& arr, std::size_t left, std::size_t mid, std::size_t right) {
+    void merge(std::vector<T>& arr, const std::size_t& left, const std::size_t& mid, const std::size_t& right) {
         std::size_t leftIterator = 0;
         std::size_t rightIterator = 0;
-        std::vector<T> res(right - left);
-
 
         while (((left + leftIterator) < mid) && ((mid + rightIterator) < right)) {
             if (arr[left + leftIterator] < arr[mid + rightIterator]) {
-                res[leftIterator + rightIterator] = arr[left + leftIterator];
+                temp[leftIterator + rightIterator] = arr[left + leftIterator];
                 leftIterator++;
             }
             else {
-                res[leftIterator + rightIterator] = arr[mid + rightIterator];
+                temp[leftIterator + rightIterator] = arr[mid + rightIterator];
                 rightIterator++;
             }
         }
         while ((left + leftIterator) < mid) {
-            res[leftIterator + rightIterator] = arr[left + leftIterator];
+            temp[leftIterator + rightIterator] = arr[left + leftIterator];
             leftIterator++;
         }
 
         while ((mid + rightIterator) < right) {
-            res[leftIterator + rightIterator] = arr[mid + rightIterator];
+            temp[leftIterator + rightIterator] = arr[mid + rightIterator];
             rightIterator++;
         }
         for (int i = 0; i < (leftIterator + rightIterator); i++) {
-            arr[left + i] = res[i];
+            arr[left + i] = temp[i];
         }
     }
 
